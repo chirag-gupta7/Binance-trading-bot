@@ -1,0 +1,4 @@
+## 2026-02-22 - Missing HTTP Timeouts and Dependency Confusion
+**Vulnerability:** External API calls to Binance Futures were made without explicit timeouts, creating a risk of resource exhaustion (DoS) if the service hangs. Additionally, the project was missing the `binance-futures-connector` dependency required for Futures trading.
+**Learning:** Default HTTP client configurations often lack timeouts, leading to potential indefinite hangs. Also, `binance-connector` (Spot) and `binance-futures-connector` (Futures) are distinct packages despite sharing the `binance` namespace, which can lead to missing dependencies.
+**Prevention:** Always configure explicit timeouts on HTTP clients (e.g., `timeout=30`). Verify package documentation to ensure the correct connector library is installed for the specific API (Spot vs Futures).
