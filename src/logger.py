@@ -23,6 +23,13 @@ class BotLogger:
 
         # File handler with detailed format
         file_handler = logging.FileHandler(self.log_file, mode='a', encoding='utf-8')
+        try:
+            # Set file permissions to 600 (read/write by owner only)
+            os.chmod(self.log_file, 0o600)
+        except Exception as e:
+            # Log to stderr if permission change fails, but don't crash
+            print(f"Warning: Failed to set log file permissions to 0600: {e}")
+
         file_handler.setLevel(logging.DEBUG)
 
         # Console handler with simpler format
