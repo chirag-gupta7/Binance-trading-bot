@@ -25,6 +25,10 @@ class BotLogger:
         file_handler = logging.FileHandler(self.log_file, mode='a', encoding='utf-8')
         file_handler.setLevel(logging.DEBUG)
 
+        # Set secure permissions for log file (Read/Write for owner only)
+        if os.path.exists(self.log_file):
+            os.chmod(self.log_file, 0o600)
+
         # Console handler with simpler format
         console_handler = logging.StreamHandler()
         console_handler.setLevel(logging.INFO)
