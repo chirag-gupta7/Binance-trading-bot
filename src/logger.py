@@ -21,6 +21,12 @@ class BotLogger:
         logger = logging.getLogger("BinanceFuturesBot")
         logger.setLevel(logging.DEBUG)
 
+        # Ensure log file exists and set strict permissions (0600)
+        log_path = Path(self.log_file)
+        if not log_path.exists():
+            log_path.touch()
+        os.chmod(self.log_file, 0o600)
+
         # File handler with detailed format
         file_handler = logging.FileHandler(self.log_file, mode='a', encoding='utf-8')
         file_handler.setLevel(logging.DEBUG)
