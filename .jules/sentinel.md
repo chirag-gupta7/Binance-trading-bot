@@ -1,0 +1,4 @@
+## 2024-05-18 - Restrict Log File Permissions
+**Vulnerability:** The centralized bot logger (`src/logger.py`) was writing logs with default OS file permissions, meaning that any user on the system could potentially read sensitive trading data, API responses, or system paths logged to `bot.log`.
+**Learning:** This codebase lacked standard file permission configurations for sensitive outputs like trading logs. It's crucial to explicitly manage permissions for locally generated files that might contain PII or proprietary strategy parameters.
+**Prevention:** Whenever generating log files or temporary files that might contain sensitive data, explicitly set the file permissions using `os.chmod` (e.g., `0o600` for owner-only read/write) or use tools like `tempfile` which restrict permissions by default.

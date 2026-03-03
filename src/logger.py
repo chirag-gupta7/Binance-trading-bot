@@ -23,6 +23,13 @@ class BotLogger:
 
         # File handler with detailed format
         file_handler = logging.FileHandler(self.log_file, mode='a', encoding='utf-8')
+
+        # 🛡️ Security enhancement: Restrict log file permissions to prevent sensitive data leakage
+        try:
+            os.chmod(self.log_file, 0o600)
+        except OSError:
+            pass
+
         file_handler.setLevel(logging.DEBUG)
 
         # Console handler with simpler format
