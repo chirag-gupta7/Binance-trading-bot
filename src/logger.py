@@ -25,6 +25,13 @@ class BotLogger:
         file_handler = logging.FileHandler(self.log_file, mode='a', encoding='utf-8')
         file_handler.setLevel(logging.DEBUG)
 
+        # Explicitly set strict permissions on log file to protect sensitive trading data
+        try:
+            if os.path.exists(self.log_file):
+                os.chmod(self.log_file, 0o600)
+        except Exception:
+            pass
+
         # Console handler with simpler format
         console_handler = logging.StreamHandler()
         console_handler.setLevel(logging.INFO)
