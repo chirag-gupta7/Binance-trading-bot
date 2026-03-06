@@ -21,6 +21,18 @@ class BotLogger:
         logger = logging.getLogger("BinanceFuturesBot")
         logger.setLevel(logging.DEBUG)
 
+        # Ensure log file has strict permissions (0o600) to protect sensitive data
+        try:
+            log_path = Path(self.log_file)
+            if not log_path.exists():
+                log_path.touch(mode=0o600)
+            else:
+                os.chmod(self.log_file, 0o600)
+        except OSError as e:
+            # We can't use the logger yet, so print to stderr
+            import sys
+            print(f"Warning: Could not set strict permissions on log file: {e}", file=sys.stderr)
+
         # File handler with detailed format
         file_handler = logging.FileHandler(self.log_file, mode='a', encoding='utf-8')
         file_handler.setLevel(logging.DEBUG)
