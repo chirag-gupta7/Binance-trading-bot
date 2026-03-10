@@ -22,8 +22,10 @@ class BotLogger:
         logger.setLevel(logging.DEBUG)
 
         # Ensure log file exists and has secure permissions (0600) before opening
-        Path(self.log_file).touch(exist_ok=True)
-        os.chmod(self.log_file, 0o600)
+        # Use os.open to prevent TOCTOU vulnerability (creating with wide permissions then chmodding)
+        flags = os.O_WRONLY | os.O_CREAT | os.O_APPEND
+        fd = os.open(self.log_file, flags, 0o600)
+        os.close(fd)
 
         # File handler with detailed format
         file_handler = logging.FileHandler(self.log_file, mode='a', encoding='utf-8')
