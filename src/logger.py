@@ -22,9 +22,7 @@ class BotLogger:
         logger.setLevel(logging.DEBUG)
 
         # Ensure log file exists and has secure permissions (0600) before opening
-        if not os.path.exists(self.log_file):
-            with open(self.log_file, 'a') as f:
-                pass
+        Path(self.log_file).touch(exist_ok=True)
         os.chmod(self.log_file, 0o600)
 
         # File handler with detailed format
