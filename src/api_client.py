@@ -44,7 +44,8 @@ class BinanceAPIClient:
             self.client = UMFutures(
                 key=API_KEY,
                 secret=API_SECRET,
-                base_url=BASE_URL if not testnet else 'https://testnet.binancefuture.com'
+                base_url=BASE_URL if not testnet else 'https://testnet.binancefuture.com',
+                timeout=10
             )
             logger.info(f"Binance API client initialized ({'testnet' if testnet else 'mainnet'})")
         except Exception as e:
