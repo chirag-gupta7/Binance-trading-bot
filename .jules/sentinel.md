@@ -1,0 +1,4 @@
+## 2024-05-24 - TOCTOU Vulnerability in Logger Initialization
+**Vulnerability:** A Time-of-Check to Time-of-Use (TOCTOU) vulnerability was found in `src/logger.py`. The code used `Path(self.log_file).touch(exist_ok=True)` followed by `os.chmod(self.log_file, 0o600)` to create the log file and set its permissions.
+**Learning:** This approach leaves a brief window between the creation of the file and the application of secure permissions. During this window, an attacker could potentially modify the file or replace it with a symlink, leading to unauthorized access or modification of sensitive trading data.
+**Prevention:** To prevent this, `os.open` should be used with the flags `os.O_CREAT | os.O_WRONLY | os.O_APPEND` and the mode `0o600`. This creates the file and sets its permissions in a single atomic operation, eliminating the TOCTOU window.
