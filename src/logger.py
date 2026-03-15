@@ -21,12 +21,16 @@ class BotLogger:
         logger.setLevel(logging.DEBUG)
 
         # Ensure log file exists and has secure permissions (0600) before opening
-        # Use os.open to prevent TOCTOU vulnerability
-        fd = os.open(self.log_file, os.O_CREAT | os.O_WRONLY | os.O_APPEND, 0o600)
-        os.close(fd)
+        # Use os.open with O_NOFOLLOW (where available) to prevent TOCTOU/symlink issues
+        flags = os.O_CREAT | os.O_WRONLY | os.O_APPEND
+        flags |= getattr(os, "O_NOFOLLOW", 0)
+        fd = os.open(self.log_file, flags, 0o600)
+        # Enforce permissions even if the file already existed
+        os.fchmod(fd, 0o600)
 
-        # File handler with detailed format
-        file_handler = logging.FileHandler(self.log_file, mode='a', encoding='utf-8')
+        # Wrap the existing file descriptor in a file object and use a StreamHandler
+        file_stream = os.fdopen(fd, "a", encoding="utf-8")
+        file_handler = logging.StreamHandler(file_stream)
         file_handler.setLevel(logging.DEBUG)
 
         # Console handler with simpler format
