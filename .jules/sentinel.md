@@ -2,3 +2,7 @@
 **Vulnerability:** A Time-of-Check to Time-of-Use (TOCTOU) vulnerability existed in `src/logger.py` where a log file was created using `Path.touch(exist_ok=True)` and subsequently its permissions were changed using `os.chmod(self.log_file, 0o600)`.
 **Learning:** This approach leaves a brief window between the file's creation and the permissions change where a malicious actor could access or modify the file.
 **Prevention:** Instead of separating the creation and permission modification, use `os.open` with the `os.O_CREAT` flag and directly specify the desired permissions (e.g., `0o600`). This ensures the file is created atomically with the correct permissions. For example: `fd = os.open(file_path, os.O_CREAT | os.O_APPEND | os.O_WRONLY, 0o600)` followed by `os.close(fd)`.
+## 2024-05-24 - [Float Validation Bypass via NaN/Inf]
+**Vulnerability:** Input validation for quantities and prices bypassed bounds checking via `float('nan')` and `float('inf')`. Python's `float()` successfully parses string representations of 'nan' and 'inf', and boolean comparisons like `float('nan') > max_val` can evaluate to False, bypassing checks.
+**Learning:** Standard type coercion (`float()`) and greater-than/less-than checks are insufficient for validating numerical data from users or external sources. `NaN` and `Inf` can lead to unexpected logic execution, system crashes, or exploitation.
+**Prevention:** Always explicitly check for `math.isnan()` and `math.isinf()` after casting to a float when validating user-supplied numerical input.
