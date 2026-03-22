@@ -3,6 +3,7 @@ Input validation module for Binance Futures Trading Bot
 Validates symbols, quantities, prices, and order parameters
 """
 
+import math
 from typing import Tuple, Dict, Any, Optional
 from logger import get_logger
 
@@ -107,6 +108,9 @@ class OrderValidator:
         except (TypeError, ValueError):
             raise ValidationError(f"Quantity must be a number, got: {quantity}")
 
+        if math.isnan(qty) or math.isinf(qty):
+            raise ValidationError(f"Quantity cannot be NaN or Infinity, got: {quantity}")
+
         if qty <= 0:
             raise ValidationError(f"Quantity must be positive, got: {qty}")
 
@@ -143,6 +147,9 @@ class OrderValidator:
         except (TypeError, ValueError):
             raise ValidationError(f"Price must be a number, got: {price}")
 
+        if math.isnan(p) or math.isinf(p):
+            raise ValidationError(f"Price cannot be NaN or Infinity, got: {price}")
+
         if p <= 0:
             raise ValidationError(f"Price must be positive, got: {p}")
 
@@ -176,6 +183,9 @@ class OrderValidator:
             entry = float(entry_price)
         except (TypeError, ValueError):
             raise ValidationError("Stop price and entry price must be numbers")
+
+        if math.isnan(stop) or math.isinf(stop) or math.isnan(entry) or math.isinf(entry):
+            raise ValidationError("Stop price and entry price cannot be NaN or Infinity")
 
         side = side.upper()
 
@@ -214,6 +224,9 @@ class OrderValidator:
             pct = float(percentage)
         except (TypeError, ValueError):
             raise ValidationError(f"Percentage must be a number, got: {percentage}")
+
+        if math.isnan(pct) or math.isinf(pct):
+            raise ValidationError(f"Percentage cannot be NaN or Infinity, got: {percentage}")
 
         if pct <= 0 or pct > 100:
             raise ValidationError(f"Percentage must be between 0 and 100, got: {pct}")
