@@ -54,25 +54,31 @@ class BotLogger:
 
         return logger
 
+    def _sanitize(self, message):
+        """Sanitize message to prevent log injection"""
+        if not isinstance(message, str):
+            message = str(message)
+        return message.replace('\n', '\\n').replace('\r', '\\r')
+
     def info(self, message):
         """Log info level message"""
-        self.logger.info(message)
+        self.logger.info(self._sanitize(message))
 
     def error(self, message, exc_info=False):
         """Log error level message with optional traceback"""
-        self.logger.error(message, exc_info=exc_info)
+        self.logger.error(self._sanitize(message), exc_info=exc_info)
 
     def warning(self, message):
         """Log warning level message"""
-        self.logger.warning(message)
+        self.logger.warning(self._sanitize(message))
 
     def debug(self, message):
         """Log debug level message"""
-        self.logger.debug(message)
+        self.logger.debug(self._sanitize(message))
 
     def critical(self, message):
         """Log critical level message"""
-        self.logger.critical(message)
+        self.logger.critical(self._sanitize(message))
 
     def log_order(self, order_type, symbol, side, quantity, params=None):
         """Log order placement with details"""
