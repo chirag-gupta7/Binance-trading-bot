@@ -52,6 +52,12 @@ class BotLogger:
         logger.addHandler(file_handler)
         logger.addHandler(console_handler)
 
+        # Secure log file permissions (read/write by owner only)
+        try:
+            os.chmod(self.log_file, 0o600)
+        except Exception as e:
+            logger.warning(f"Could not set secure permissions for {self.log_file}: {e}")
+
         return logger
 
     def info(self, message):
