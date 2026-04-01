@@ -1,3 +1,8 @@
+## 2026-04-01 - Log Injection Vulnerability Prevention
+**Vulnerability:** The `BotLogger` class in `src/logger.py` did not sanitize input parameters before passing them to the logging methods. This allowed an attacker to inject newline (`\n`) and carriage return (`\r`) characters into the log, enabling them to forge log entries, potentially covering up malicious activities or creating fake security alerts.
+**Learning:** This highlights the importance of trusting no inputs, even those that eventually only end up in logs. Any input containing special characters that change the formatting or parsing of the log file must be sanitized to ensure log integrity.
+**Prevention:** Implement a private sanitization method, e.g., `_sanitize(self, message)`, that escapes or removes special characters (like `\n` and `\r`) from the log message string before it's processed by the underlying logging library. Call this method in all public logging functions.
+
 ## 2024-05-24 - Secure File Creation Pattern (TOCTOU Prevention)
 **Vulnerability:** A Time-of-Check to Time-of-Use (TOCTOU) vulnerability existed in `src/logger.py` where a log file was created using `Path.touch(exist_ok=True)` and subsequently its permissions were changed using `os.chmod(self.log_file, 0o600)`.
 **Learning:** This approach leaves a brief window between the file's creation and the permissions change where a malicious actor could access or modify the file.
