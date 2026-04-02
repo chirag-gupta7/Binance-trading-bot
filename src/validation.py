@@ -4,6 +4,7 @@ Validates symbols, quantities, prices, and order parameters
 """
 
 from typing import Tuple, Dict, Any, Optional
+import math
 from logger import get_logger
 
 logger = get_logger()
@@ -104,6 +105,8 @@ class OrderValidator:
         """
         try:
             qty = float(quantity)
+            if not math.isfinite(qty):
+                raise ValidationError(f"Quantity must be a finite number, got: {quantity}")
         except (TypeError, ValueError):
             raise ValidationError(f"Quantity must be a number, got: {quantity}")
 
@@ -140,6 +143,8 @@ class OrderValidator:
         """
         try:
             p = float(price)
+            if not math.isfinite(p):
+                raise ValidationError(f"Price must be a finite number, got: {price}")
         except (TypeError, ValueError):
             raise ValidationError(f"Price must be a number, got: {price}")
 
@@ -174,6 +179,8 @@ class OrderValidator:
         try:
             stop = float(stop_price)
             entry = float(entry_price)
+            if not math.isfinite(stop) or not math.isfinite(entry):
+                raise ValidationError("Stop price and entry price must be finite numbers")
         except (TypeError, ValueError):
             raise ValidationError("Stop price and entry price must be numbers")
 
@@ -212,6 +219,8 @@ class OrderValidator:
         """
         try:
             pct = float(percentage)
+            if not math.isfinite(pct):
+                raise ValidationError(f"Percentage must be a finite number, got: {percentage}")
         except (TypeError, ValueError):
             raise ValidationError(f"Percentage must be a number, got: {percentage}")
 
