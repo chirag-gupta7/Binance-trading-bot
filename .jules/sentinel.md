@@ -1,3 +1,8 @@
+## 2025-02-18 - Missing Float Validation Allows NaN/Inf Security Bypass
+**Vulnerability:** Input validation methods in `src/validation.py` were missing explicit checks for NaN (Not a Number) and Infinity. Attackers could bypass bounds checking logic by submitting `float('nan')` or `float('inf')` values for critical parameters like prices and quantities. Since `nan > 0` and `nan < MAX_VAL` both evaluate to False, simple bounds checks are insufficient to block them.
+**Learning:** Checking for positive values (e.g. `if qty <= 0:`) or bounding values (e.g. `if qty < MIN_VAL:`) does not adequately validate inputs because standard comparison operators return `False` when comparing to `NaN`. This effectively allows `NaN` inputs to sneak through security validations undetected unless explicitly handled.
+**Prevention:** Use `math.isfinite()` immediately after type casting float parameters. Always ensure `math.isfinite()` is explicitly called on float values in Python to catch `NaN` and `Inf` bounds checking bypasses before applying range or threshold validation.
+
 ## 2024-05-24 - Secure File Creation Pattern (TOCTOU Prevention)
 **Vulnerability:** A Time-of-Check to Time-of-Use (TOCTOU) vulnerability existed in `src/logger.py` where a log file was created using `Path.touch(exist_ok=True)` and subsequently its permissions were changed using `os.chmod(self.log_file, 0o600)`.
 **Learning:** This approach leaves a brief window between the file's creation and the permissions change where a malicious actor could access or modify the file.
