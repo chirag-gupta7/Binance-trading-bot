@@ -3,6 +3,7 @@ Input validation module for Binance Futures Trading Bot
 Validates symbols, quantities, prices, and order parameters
 """
 
+import math
 from typing import Tuple, Dict, Any, Optional
 from logger import get_logger
 
@@ -107,6 +108,9 @@ class OrderValidator:
         except (TypeError, ValueError):
             raise ValidationError(f"Quantity must be a number, got: {quantity}")
 
+        if not math.isfinite(qty):
+            raise ValidationError(f"Quantity must be a finite number, got: {qty}")
+
         if qty <= 0:
             raise ValidationError(f"Quantity must be positive, got: {qty}")
 
@@ -143,6 +147,9 @@ class OrderValidator:
         except (TypeError, ValueError):
             raise ValidationError(f"Price must be a number, got: {price}")
 
+        if not math.isfinite(p):
+            raise ValidationError(f"Price must be a finite number, got: {p}")
+
         if p <= 0:
             raise ValidationError(f"Price must be positive, got: {p}")
 
@@ -176,6 +183,9 @@ class OrderValidator:
             entry = float(entry_price)
         except (TypeError, ValueError):
             raise ValidationError("Stop price and entry price must be numbers")
+
+        if not math.isfinite(stop) or not math.isfinite(entry):
+            raise ValidationError(f"Stop price and entry price must be finite numbers")
 
         side = side.upper()
 
@@ -214,6 +224,9 @@ class OrderValidator:
             pct = float(percentage)
         except (TypeError, ValueError):
             raise ValidationError(f"Percentage must be a number, got: {percentage}")
+
+        if not math.isfinite(pct):
+            raise ValidationError(f"Percentage must be a finite number, got: {pct}")
 
         if pct <= 0 or pct > 100:
             raise ValidationError(f"Percentage must be between 0 and 100, got: {pct}")
