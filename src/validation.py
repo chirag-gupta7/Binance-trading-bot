@@ -1,3 +1,4 @@
+import math
 """
 Input validation module for Binance Futures Trading Bot
 Validates symbols, quantities, prices, and order parameters
@@ -107,6 +108,9 @@ class OrderValidator:
         except (TypeError, ValueError):
             raise ValidationError(f"Quantity must be a number, got: {quantity}")
 
+        if not math.isfinite(qty):
+            raise ValidationError(f"Quantity must be a finite number, got: {quantity}")
+
         if qty <= 0:
             raise ValidationError(f"Quantity must be positive, got: {qty}")
 
@@ -142,6 +146,9 @@ class OrderValidator:
             p = float(price)
         except (TypeError, ValueError):
             raise ValidationError(f"Price must be a number, got: {price}")
+
+        if not math.isfinite(p):
+            raise ValidationError(f"Price must be a finite number, got: {price}")
 
         if p <= 0:
             raise ValidationError(f"Price must be positive, got: {p}")
