@@ -102,10 +102,14 @@ class OrderValidator:
         Raises:
             ValidationError: If quantity is invalid
         """
+        import math
         try:
             qty = float(quantity)
         except (TypeError, ValueError):
             raise ValidationError(f"Quantity must be a number, got: {quantity}")
+
+        if not math.isfinite(qty):
+            raise ValidationError(f"Quantity must be a finite number, got: {quantity}")
 
         if qty <= 0:
             raise ValidationError(f"Quantity must be positive, got: {qty}")
@@ -138,10 +142,14 @@ class OrderValidator:
         Raises:
             ValidationError: If price is invalid
         """
+        import math
         try:
             p = float(price)
         except (TypeError, ValueError):
             raise ValidationError(f"Price must be a number, got: {price}")
+
+        if not math.isfinite(p):
+            raise ValidationError(f"Price must be a finite number, got: {price}")
 
         if p <= 0:
             raise ValidationError(f"Price must be positive, got: {p}")
@@ -171,11 +179,17 @@ class OrderValidator:
         Raises:
             ValidationError: If stop price logic is invalid
         """
+        import math
         try:
             stop = float(stop_price)
             entry = float(entry_price)
         except (TypeError, ValueError):
             raise ValidationError("Stop price and entry price must be numbers")
+
+        if not math.isfinite(stop):
+            raise ValidationError(f"Stop price must be a finite number, got: {stop_price}")
+        if not math.isfinite(entry):
+            raise ValidationError(f"Entry price must be a finite number, got: {entry_price}")
 
         side = side.upper()
 
@@ -210,10 +224,14 @@ class OrderValidator:
         Raises:
             ValidationError: If percentage is invalid
         """
+        import math
         try:
             pct = float(percentage)
         except (TypeError, ValueError):
             raise ValidationError(f"Percentage must be a number, got: {percentage}")
+
+        if not math.isfinite(pct):
+            raise ValidationError(f"Percentage must be a finite number, got: {percentage}")
 
         if pct <= 0 or pct > 100:
             raise ValidationError(f"Percentage must be between 0 and 100, got: {pct}")
