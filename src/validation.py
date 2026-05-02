@@ -3,6 +3,7 @@ Input validation module for Binance Futures Trading Bot
 Validates symbols, quantities, prices, and order parameters
 """
 
+import math
 from typing import Tuple, Dict, Any, Optional
 from logger import get_logger
 
@@ -104,8 +105,10 @@ class OrderValidator:
         """
         try:
             qty = float(quantity)
+            if not math.isfinite(qty):
+                raise ValueError
         except (TypeError, ValueError):
-            raise ValidationError(f"Quantity must be a number, got: {quantity}")
+            raise ValidationError(f"Quantity must be a valid finite number, got: {quantity}")
 
         if qty <= 0:
             raise ValidationError(f"Quantity must be positive, got: {qty}")
@@ -140,8 +143,10 @@ class OrderValidator:
         """
         try:
             p = float(price)
+            if not math.isfinite(p):
+                raise ValueError
         except (TypeError, ValueError):
-            raise ValidationError(f"Price must be a number, got: {price}")
+            raise ValidationError(f"Price must be a valid finite number, got: {price}")
 
         if p <= 0:
             raise ValidationError(f"Price must be positive, got: {p}")
@@ -174,8 +179,10 @@ class OrderValidator:
         try:
             stop = float(stop_price)
             entry = float(entry_price)
+            if not (math.isfinite(stop) and math.isfinite(entry)):
+                raise ValueError
         except (TypeError, ValueError):
-            raise ValidationError("Stop price and entry price must be numbers")
+            raise ValidationError("Stop price and entry price must be valid finite numbers")
 
         side = side.upper()
 
@@ -212,8 +219,10 @@ class OrderValidator:
         """
         try:
             pct = float(percentage)
+            if not math.isfinite(pct):
+                raise ValueError
         except (TypeError, ValueError):
-            raise ValidationError(f"Percentage must be a number, got: {percentage}")
+            raise ValidationError(f"Percentage must be a valid finite number, got: {percentage}")
 
         if pct <= 0 or pct > 100:
             raise ValidationError(f"Percentage must be between 0 and 100, got: {pct}")
