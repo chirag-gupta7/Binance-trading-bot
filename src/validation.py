@@ -249,6 +249,8 @@ class OrderValidator:
             ValidationError: If interval is invalid
         """
         try:
+            if isinstance(interval, float) and (math.isnan(interval) or math.isinf(interval)):
+                raise ValidationError(f"Interval cannot be NaN or Infinity, got: {interval}")
             intv = int(interval)
         except (TypeError, ValueError):
             raise ValidationError(f"Interval must be an integer, got: {interval}")
