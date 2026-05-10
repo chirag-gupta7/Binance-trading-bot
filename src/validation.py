@@ -3,8 +3,8 @@ Input validation module for Binance Futures Trading Bot
 Validates symbols, quantities, prices, and order parameters
 """
 
-from typing import Tuple, Dict, Any, Optional
 import math
+from typing import Tuple, Dict, Any, Optional
 from logger import get_logger
 
 logger = get_logger()
@@ -108,8 +108,8 @@ class OrderValidator:
         except (TypeError, ValueError):
             raise ValidationError(f"Quantity must be a number, got: {quantity}")
 
-        if math.isnan(qty) or math.isinf(qty):
-            raise ValidationError(f"Quantity cannot be NaN or Infinity, got: {qty}")
+        if not math.isfinite(qty):
+            raise ValidationError(f"Quantity must be a finite number, got: {qty}")
 
         if qty <= 0:
             raise ValidationError(f"Quantity must be positive, got: {qty}")
@@ -147,8 +147,8 @@ class OrderValidator:
         except (TypeError, ValueError):
             raise ValidationError(f"Price must be a number, got: {price}")
 
-        if math.isnan(p) or math.isinf(p):
-            raise ValidationError(f"Price cannot be NaN or Infinity, got: {p}")
+        if not math.isfinite(p):
+            raise ValidationError(f"Price must be a finite number, got: {p}")
 
         if p <= 0:
             raise ValidationError(f"Price must be positive, got: {p}")
@@ -184,8 +184,8 @@ class OrderValidator:
         except (TypeError, ValueError):
             raise ValidationError("Stop price and entry price must be numbers")
 
-        if math.isnan(stop) or math.isinf(stop) or math.isnan(entry) or math.isinf(entry):
-            raise ValidationError("Stop price and entry price cannot be NaN or Infinity")
+        if not math.isfinite(stop) or not math.isfinite(entry):
+            raise ValidationError("Stop price and entry price must be finite numbers")
 
         side = side.upper()
 
@@ -225,8 +225,8 @@ class OrderValidator:
         except (TypeError, ValueError):
             raise ValidationError(f"Percentage must be a number, got: {percentage}")
 
-        if math.isnan(pct) or math.isinf(pct):
-            raise ValidationError(f"Percentage cannot be NaN or Infinity, got: {pct}")
+        if not math.isfinite(pct):
+            raise ValidationError(f"Percentage must be a finite number, got: {pct}")
 
         if pct <= 0 or pct > 100:
             raise ValidationError(f"Percentage must be between 0 and 100, got: {pct}")

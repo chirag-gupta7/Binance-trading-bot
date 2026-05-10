@@ -3,7 +3,7 @@
 **Learning:** This approach leaves a brief window between the file's creation and the permissions change where a malicious actor could access or modify the file.
 **Prevention:** Instead of separating the creation and permission modification, use `os.open` with the `os.O_CREAT` flag and directly specify the desired permissions (e.g., `0o600`). This ensures the file is created atomically with the correct permissions. For example: `fd = os.open(file_path, os.O_CREAT | os.O_APPEND | os.O_WRONLY, 0o600)` followed by `os.close(fd)`.
 
-## 2024-05-24 - NaN and Infinity Bypass in Input Validation
-**Vulnerability:** A vulnerability existed in `src/validation.py` where `float('nan')` and `float('inf')` values bypassed minimum and maximum bounds checking. Since comparisons like `nan < 0.001` or `nan > 1000000` evaluate to `False`, the bounds checks successfully passed and returned the `nan` or `inf` values.
-**Learning:** Python's floating-point system supports `NaN` (Not a Number) and `Infinity`. Basic comparison operators (`<`, `<=`, `>`, `>=`) involving `NaN` will always return `False`. This allows `NaN` and `Infinity` to bypass standard range validations if explicit checks are not implemented.
-**Prevention:** Always use `math.isnan()` and `math.isinf()` to explicitly filter out `NaN` and `Infinity` values when validating floating-point numerical inputs.
+## 2024-05-09 - Validation Bypass via Floating-Point NaN
+**Vulnerability:** Input validation for numeric boundaries (min/max) could be bypassed by supplying `NaN` values, as `NaN` comparisons always return `False`.
+**Learning:** Relying purely on `<` or `>` comparison checks for float values is insufficient if the language permits `NaN` or `Infinity`, which sidestep logical bounds.
+**Prevention:** Always validate numeric types with `math.isfinite()` immediately after type coercion, before performing boundary checks.
